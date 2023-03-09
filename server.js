@@ -9,16 +9,19 @@ import insertRouter from './routes/seedRoutes.js'
 import userRouter from './routes/userRoutes.js'
 import expressAsyncHandler from 'express-async-handler'
 
-// mongoose
-dotenv.config() // for retriving data from .env
-mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGODB_URI).then(() => {
-    console.log('connected to db')
-}).catch(err => {
-    console.log(err.message)
-})
-
 const app = express()
+const PORT = process.env.PORT || 5000
+
+// cyclic mongoose
+const connectDB = async () => {
+    try {
+      const conn = await mongoose.connect(process.env.MONGODB_URI);
+      console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+      console.log(error);
+      process.exit(1);
+    }
+  }
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -40,7 +43,10 @@ app.get('*', (req,res)=>
     res.sendFile(path.join(_dirname, '/frontend/build/index.html'))
 )
 
-const localPort = process.env.PORT || 5000
-app.listen(localPort, async (req, res) => {
-    console.log(`server runnign at http://localhost:${localPort}`)
+
+//Connect to the database before listening
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log("listening for requests");
+    })
 })
