@@ -15,8 +15,7 @@ An ecommerce bookshop
 
 
 ## Live
-Deployed on Render <br/>
-[Live](https://online-todolist.onrender.com)
+[Live](https://bookmania.cyclic.app/)
 
 
 ## About
